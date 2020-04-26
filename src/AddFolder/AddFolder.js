@@ -1,6 +1,7 @@
 import React from "react";
 import NotefulForm from "../NotefulForm/NotefulForm";
 import NotefulContext from "../NotefulContext";
+import config from "../config";
 import "./AddFolder.css";
 import PropTypes from "prop-types";
 
@@ -20,7 +21,7 @@ class AddFolder extends React.Component {
     };
 
     try {
-      fetch("http://localhost:9090/folders", {
+      fetch(`${config.API_ENDPOINT}/folders`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
