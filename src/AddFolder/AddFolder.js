@@ -145,6 +145,6 @@ export default class AddFolder extends React.Component {
   }
 }
 
-AddFolder.propType = {
+AddFolder.propTypes = {
   push: PropTypes.func.isRequired,
 };
