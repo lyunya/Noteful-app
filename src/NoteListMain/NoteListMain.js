@@ -7,6 +7,7 @@ import Note from "../Note/Note";
 import { getNotesForFolder } from "../notes-helpers";
 import CircleButton from "../CircleButton/CircleButton";
 
+
 export default class NoteListMain extends Component {
   static defaultProps = {
     match: {

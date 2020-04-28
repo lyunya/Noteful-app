@@ -14,7 +14,7 @@ export default class AddNote extends React.Component {
     titleValid: false,
     contentValid: false,
     folderSelectValid: false,
-    validationMessage: null,
+    validationMessage: "All fields are required.",
   };
 
   static contextType = NotefulContext;
@@ -88,7 +88,7 @@ export default class AddNote extends React.Component {
     const note = {
       name: title,
       content: content,
-      folderid: folderId,
+      folderId: folderId,
       modified: new Date(),
     };
 
@@ -172,6 +172,9 @@ export default class AddNote extends React.Component {
             {options}
           </select>
         </div>
+        <span className="error-box" id="error-box" aria-live="assertive">
+          {this.state.validationMessage}
+        </span>
         <div className="buttons">
           <button
             type="button"

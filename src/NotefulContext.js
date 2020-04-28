@@ -6,11 +6,8 @@ const NotefulContext = React.createContext({
   toggle: false,
   API: "http://localhost:9090",
   deleteNote: () => {},
-  deleteFolder: () => {},
   addFolder: () => {},
   addNote: () => {},
-  toggleErrors: () => {},
-  throwError: () => {},
   back: () => {},
 });
 

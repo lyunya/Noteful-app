@@ -18,6 +18,7 @@ export default class NotePageMain extends React.Component {
   };
 
   static contextType = NotefulContext;
+  
   handleDeleteNote = (noteId) => {
     this.props.history.push("/");
   };

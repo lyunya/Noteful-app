@@ -1,70 +1,150 @@
 import React from "react";
-import NotefulForm from "../NotefulForm/NotefulForm";
 import NotefulContext from "../NotefulContext";
 import config from "../config";
-import "./AddFolder.css";
 import PropTypes from "prop-types";
+import "../NotefulForm/NotefulForm.css";
 
-class AddFolder extends React.Component {
-  static defaultProps = {
-    name: "",
-    history: {
-      push: () => {},
-    },
-  };
+export default class AddFolder extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasErrors: false,
+      title: "",
+      formValid: false,
+      titleValid: false,
+      validationMessage: "Folder title required",
+    };
+  }
+
   static contextType = NotefulContext;
 
-  handleSubmit = (e) => {
+  goBack = () => {
+    this.props.history.goBack();
+  };
+
+  updateFormEntry(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState(
+      {
+        [e.target.name]: e.target.value,
+      },
+      () => {
+        this.validateEntry(name, value);
+      }
+    );
+  }
+
+  validateEntry(name, value) {
+    let inputErrors;
+    let hasErrors = this.state.hasErrors;
+
+    value = value.trim();
+    if (value < 1) {
+      inputErrors = `${name} is required.`;
+    } else {
+      inputErrors = "";
+      hasErrors = false;
+    }
+    this.setState(
+      {
+        validationMessage: inputErrors,
+        [`${name}Valid`]: !hasErrors,
+        hasErrors: !hasErrors,
+      },
+      this.formValid
+    );
+  }
+
+  formValid() {
+    const { titleValid } = this.state;
+    if (titleValid === true) {
+      this.setState({
+        formValid: true,
+      });
+    } else {
+      this.setState({
+        formValid: !this.formValid,
+      });
+    }
+  }
+
+  handleSubmit(e) {
     e.preventDefault();
+    const { title } = this.state;
     const folder = {
-      name: e.target["folder-name"].value,
+      name: title,
     };
 
-    try {
-      fetch(`${config.API_ENDPOINT}/folders`, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(folder),
+    this.setState({ error: null });
+    fetch(`${config.API_ENDPOINT}/folders`, {
+      method: "POST",
+      body: JSON.stringify(folder),
+      headers: {
+        "content-type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((error) => {
+            console.log(`Error is: ${error}`);
+            throw error;
+          });
+        }
+        return res.json();
       })
-        .then((res) => {
-          if (!res.ok) return res.json().then((e) => Promise.reject(e));
-          return res.json();
-        })
-        .then((data) => {
-          this.context.addFolder(data);
-          this.props.history.push(`/`);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      .then((data) => {
+        this.goBack();
+        this.context.addFolder(data);
+      })
+      .catch((error) => {
+        this.setState({ error });
+      });
+  }
 
   render() {
     return (
-      <section className="AddFolder">
-        <h2>Create a folder</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
-          <div className="field">
-            <label htmlFor="folder-name-input">Name</label>
-            <input type="text" id="folder-name-input" name="folder-name" />
-          </div>
-          <div className="buttons">
-            <button type="submit">Add folder</button>
-          </div>
-        </NotefulForm>
-      </section>
+      <form className="Noteful-form" onSubmit={(e) => this.handleSubmit(e)}>
+        <h2 className="title">Add Folder</h2>
+        <div className="form-group">
+          <label htmlFor="title">Title</label>
+          <input
+            type="text"
+            className="field"
+            name="title"
+            id="title"
+            aria-label="Title"
+            aria-required="true"
+            placeholder="Folder Title"
+            aria-placeholder="Folder Title"
+            onChange={(e) => this.updateFormEntry(e)}
+          />
+        </div>
+        <span className="error-box" id="error-box" aria-live="assertive">
+          {this.state.validationMessage}
+        </span>
+        <div className="buttons">
+          <button
+            type="button"
+            className="button"
+            onClick={() => this.goBack()}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="button"
+            disabled={this.state.formValid === false}
+          >
+            Save
+          </button>
+          {}
+        </div>
+      </form>
     );
   }
 }
 
-AddFolder.propTypes = {
-  folders: PropTypes.array,
-  name: PropTypes.string.isRequired,
-  id: PropTypes.string,
-  content: PropTypes.string,
-  modified: PropTypes.string,
+AddFolder.propType = {
+  push: PropTypes.func.isRequired,
 };
-
-export default AddFolder;
