@@ -44,8 +44,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    Promise.all([
-      fetch(`${API}/notes`), fetch(`${API}/folders`)])
+    Promise.all([fetch(`${API}/notes`), fetch(`${API}/folders`)])
       .then(([notesRes, foldersRes]) => {
         if (!notesRes.ok) return notesRes.json().then((e) => Promise.reject(e));
         if (!foldersRes.ok)
@@ -105,7 +104,6 @@ class App extends React.Component {
       notes: this.state.notes,
       folders: this.state.folders,
       toggle: this.state.toggle,
-      toggleErrors: this.handleErrorToggle,
       addNote: this.handleAddNote,
       addFolder: this.handleAddFolder,
       deleteNote: this.handleDeleteNote,

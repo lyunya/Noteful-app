@@ -24,9 +24,10 @@ export default class NotePageMain extends React.Component {
   };
 
   render() {
-    const { notes = [] } = this.context;
-    const { noteId } = this.state.forErrors.params;
+    const { notes  } = this.context;
+    const { noteId } = this.props.match.params;
     const note = findNote(notes, noteId) || { content: "" };
+
     if (this.state.toggle === false) {
       this.setState({
         forErrors: "err",

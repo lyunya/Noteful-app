@@ -88,10 +88,10 @@ export default class AddNote extends React.Component {
     const note = {
       name: title,
       content: content,
-      folderId: folderId,
+      folder_id: folderId,
       modified: new Date(),
     };
-
+    console.log(note)
     this.setState({ error: null });
 
     fetch(`${config.API_ENDPOINT}/notes`, {
